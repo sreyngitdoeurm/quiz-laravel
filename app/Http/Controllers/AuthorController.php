@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Author;
+use App\Http\Resources\AuthorResource;
 class AuthorController extends Controller
 {
     /**
@@ -14,7 +15,7 @@ class AuthorController extends Controller
     public function index()
     {
         // 
-        return Author::orderBy('id','desc')->get();
+        return AuthorResource::collection(Author::get()->take(3));
     }
 
     /**
@@ -50,7 +51,7 @@ class AuthorController extends Controller
     public function show($id)
     {
         //
-        return Author::findOrFail($id);
+        return AuthorResource(Author::findOrFail($id));
     }
 
     /**

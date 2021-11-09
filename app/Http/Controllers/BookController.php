@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Book;
+use App\Http\Resources\BookResource;
 
 class BookController extends Controller
 {
@@ -15,7 +16,7 @@ class BookController extends Controller
     public function index()
     {
         //
-        return Book::orderBy('id','desc')->get();
+        return BookResource::collection(Book::orderBy('id','desc')->get());
     }
 
     /**
@@ -29,16 +30,17 @@ class BookController extends Controller
         //
         $request->validate([
             'title'=>'required|max:10|min:3',
-            'body'=>'required|max:3|min:50',
+            'body'=>'required|max:50|min:3',
            
         ]);
 
         $book = new Book();
         $book ->title = $request->title;
         $book ->body = $request->body;
-        $author->save();
+        $book ->author_id = $request->author_id;
+        $book->save();
 
-        return response()->json(['message' => 'Book Created'], 201);
+        return response()->json(['message' => 'Book Created'], 200);
     }
 
     /**
@@ -50,7 +52,7 @@ class BookController extends Controller
     public function show($id)
     {
         //
-        return Book::findOrFail($id);
+        return BookResource(Book::findOrFail($id));
     }
 
     /**
@@ -65,16 +67,17 @@ class BookController extends Controller
         //
         $request->validate([
             'title'=>'required|max:10|min:3',
-            'body'=>'required|max:3|min:50',
+            'body'=>'required|max:50|min:3',
            
         ]);
 
         $book = Book::findOrFail($id);
         $book ->title = $request->title;
         $book ->body = $request->body;
-        $author->save();
+        $book ->author_id = $request->author_id;
+        $book->save();
 
-        return response()->json(['message' => 'Book Update'], 200);
+        return response()->json(['message' => 'Book Update'], 201);
     }
 
     /**
